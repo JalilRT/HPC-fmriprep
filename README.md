@@ -221,6 +221,14 @@ Confounds (or nuisance regressors) are variables representing fluctuations with 
 
 ![confo](https://fmriprep.org/en/stable/_images/sub-01_task-mixedgamblestask_run-01_bold_carpetplot.svg)
 
+## Monitoring
+
+You can check the status of the job using qstat on terminal
+
+job-ID  prior   name       user         state submit/start at     queue                          slots ja-task-ID
+-----------------------------------------------------------------------------------------------------------------
+  14815 0.50817 fmriprep   jrasgado       r   23/01/2021 16:28:19 all.q@compute-00-10.cm.cluster   3       1
+
 ## Wiki 📖
 
 You can find more information and others tutorials at [PSILANTRO](https://github.com/psilantrolab/Documentation/wiki/)
