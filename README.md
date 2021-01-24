@@ -1,99 +1,85 @@
 # HCP-fmriprep
 
-_Acá va un párrafo que describa lo que es el proyecto_
+[fmriprep](https://www.nature.com/articles/s41592-018-0235-4) is an suscesfull tool to preprocessing fmri data before statistical analysis developed by the Poldrack lab. This tool performs a bunch of steps from differents softwares such as coregistration, normalization, unwarping, noise component extraction, segmentation, skullstripping, etc. Please check the main page to more information [Go to fmriprep](https://fmriprep.org/en/stable/)
 
 ![intro](fmriprep-workflow-all.png)
 
-## How to start run it 🚀
+## How to run it 🚀
 
-Para poder correr
-
-### Pre-requisitos 📋
-
-_Que cosas necesitas para instalar el software y como instalarlas_
+You can run fmriprep by installing in your computer through python pip, however, you also have to install all the [dependencies to run it](https://fmriprep.org/en/stable/installation.html#external-dependencies)
 
 ```
-Da un ejemplo
+python -m pip install fmriprep
 ```
 
-### Instalación 🔧
+However, we strongly recommend to run it using a container ([Docker](https://www.docker.com/) or [Singularity](https://sylabs.io/docs/)). In here, we going to use Singularity to run it in a HCP cluster (Ada-lavis in UNAM). To see what a container is, please check: https://www.docker.com/resources/what-container
 
-_Una serie de ejemplos paso a paso que te dice lo que debes ejecutar para tener un entorno de desarrollo ejecutandose_
 
-_Dí cómo será ese paso_
+### Requirements 📋
 
-```
-Da un ejemplo
-```
-
-_Y repite_
+We firstly need to create a singularity container from fmriprep. We can copy from the docker container at https://hub.docker.com/r/poldracklab/fmriprep/ and create the singularity one by run the follow command on a terminal in the location of your preference.
 
 ```
-hasta finalizar
+singularity build fmriprep_v20.sif docker://poldracklab/fmriprep
 ```
 
-_Finaliza con un ejemplo de cómo obtener datos del sistema o como usarlos para una pequeña demo_
+This will create the container file (.sif) with all the dependencies needed
 
-## Ejecutando las pruebas ⚙️
+## Configuration before run 🔧
 
-_Explica como ejecutar las pruebas automatizadas para este sistema_
+### BIDS format
 
-### Analice las pruebas end-to-end 🔩
-
-_Explica que verifican estas pruebas y por qué_
-
+Remenber, fmriprep requires that the input data are organized according to the [BIDS standard](https://bids.neuroimaging.io/). Please check https://github.com/psilantrolab/Documentation/wiki/Dicom-to-BIDS to check how to convert files in the format.
 ```
-Da un ejemplo
+data/bids/
+├── CHANGES
+├── dataset_description.json
+├── LICENSE
+├── participants.json
+├── participants.tsv
+├── README
+├── README.md
+├── sub-001
+│   ├── anat
+│   │   ├── sub-001_T1w.json
+│   │   └── sub-001_T1w.nii.gz
+│   ├── fmap
+│   │   ├── sub-001_dir-PA_epi.json
+│   │   └── sub-001_dir-PA_epi.nii.gz
+│   └── func
+│       ├── sub-001_task-rest_bold.json
+│       └── sub-001_task-rest_bold.nii.gz
+├── sub-002
+│   ├── anat
+│   │   ├── sub-002_T1w.json
+│   │   └── sub-002_T1w.nii.gz
+│   ├── fmap
+│   │   ├── sub-002_dir-PA_epi.json
+│   │   └── sub-002_dir-PA_epi.nii.gz
+│   └── func
+│       ├── sub-002_task-rest_bold.json
+│       └── sub-002_task-rest_bold.nii.gz
 ```
 
-### Y las pruebas de estilo de codificación ⌨️
+### Preparing the environment 
 
-_Explica que verifican estas pruebas y por qué_
+In an HCP cluster like ADA, you could 
 
-```
-Da un ejemplo
-```
+## Now we can run it ⚙️
 
-## Despliegue 📦
+### Single subject run
 
-_Agrega notas adicionales sobre como hacer deploy_
 
-## Construido con 🛠️
+### Run it in a loop cycle
 
-_Menciona las herramientas que utilizaste para crear tu proyecto_
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - El framework web usado
-* [Maven](https://maven.apache.org/) - Manejador de dependencias
-* [ROME](https://rometools.github.io/rome/) - Usado para generar RSS
+## Output 🔩 📦
 
-## Contribuyendo 🖇️
-
-Por favor lee el [CONTRIBUTING.md](https://gist.github.com/villanuevand/xxxxxx) para detalles de nuestro código de conducta, y el proceso para enviarnos pull requests.
 
 ## Wiki 📖
 
-Puedes encontrar mucho más de cómo utilizar este proyecto en nuestra [Wiki](https://github.com/tu/proyecto/wiki)
+You can find more information and others tutorials at [PSILANTRO](https://github.com/psilantrolab/Documentation/wiki/)
 
-## Versionado 📌
+## Other Links  ✒️
 
-Usamos [SemVer](http://semver.org/) para el versionado. Para todas las versiones disponibles, mira los [tags en este repositorio](https://github.com/tu/proyecto/tags).
 
-## Autores ✒️
-
-_Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios_
-
-* **Andrés Villanueva** - *Trabajo Inicial* - [villanuevand](https://github.com/villanuevand)
-* **Fulanito Detal** - *Documentación* - [fulanitodetal](#fulanito-de-tal)
-
-También puedes mirar la lista de todos los [contribuyentes](https://github.com/your/project/contributors) quíenes han participado en este proyecto. 
-
-## Licencia 📄
-
-Este proyecto está bajo la Licencia (Tu Licencia) - mira el archivo [LICENSE.md](LICENSE.md) para detalles
-
-## Expresiones de Gratitud 🎁
-
-* Comenta a otros sobre este proyecto 📢
-* Invita una cerveza 🍺 o un café ☕ a alguien del equipo. 
-* Da las gracias públicamente 🤓.
-* etc.
