@@ -63,15 +63,93 @@ data/bids/
 
 ### Preparing the environment 
 
-In an HCP cluster like ADA, you could 
+In an HCP cluster like ADA, you firstly must load the modules that are needed to start running each tool like singularity.
+
+```
+module load singularityce/3.5
+```
+
+Also you going to need a FreeSurfer license and export it into your script or before run it, but don't worry, it's free: https://surfer.nmr.mgh.harvard.edu/registration.html
+
+```
+export FS_LICENSE=$DIR/jrasgado/license.txt
+```
 
 ## Now we can run it ⚙️
 
 ### Single subject run
 
+Directly from computer node you can bash the script with:
+
+```
+bash fmriprep_script_1s.sh
+```
+*it's gonna ask for some inputs
+
+-------
+
+Each parameter in here are taken and can be checked in: https://fmriprep.org/en/stable/usage.html
+
+- participant_label: input for the participant identifier
+- output-spaces: Standard and non-standard spaces to resample anatomical and functional images to
+- resource-monitor: enable Nipype’s resource monitoring to keep track of memory and CPU usage
+- write-graph: Write workflow graph
+- fd-spike-threshold: Threshold for flagging a frame as an outlier on the basis of framewise displacement (for patients at 0.5)
+- fs-no-reconall: disable FreeSurfer surface preprocessing.
+- skip_bids_validation: if you don't have all bids parameters you can skip it
 
 ### Run it in a loop cycle
 
+To avoid run each subject one by one, you can create an script to run 'em all without any entry in the terminal.
+
+```
+#!/bin/bash
+
+DIR=/path/to/all/files
+export FS_LICENSE=$DIR/jrasgado/license.txt
+container=$DIR/public/singularity_images/fmriprep_v20.sif
+
+# I like to send each job using fsl_sub
+export FSLDIR=/mnt/MD1200A/user/user/fsl_5.0.6
+export PATH=${FSLDIR}/bin:${PATH}
+. ${FSLDIR}/etc/fslconf/fsl.sh
+export FSLPARALLEL=1
+export LD_LIBRARY_PATH=${FSLDIR}/lib:${LD_LIBRARY_PATH}
+
+subjid=`ls -d $DIR/bids/sub-*`
+
+for s in $subjid
+do
+  this_subject=`basename $s`
+  this_subject=${this_subject/sub-/}
+  echo "submitting job for subject $this_subject"
+  fsl_sub -s openmp,8 -R 10 -N cpr_${this_subject}_fsr \
+  singularity run -B /mnt:/mnt $container \
+  ${UP_LEVEL}/data/bids \
+  ${UP_LEVEL}/derrivatives/fmriprep/output_16FEB2020_fsr \
+  participant \
+  --participant_label $this_subject \
+  --output-spaces T1w MNI152NLin2009cAsym fsaverage5\
+  --work-dir ${UP_LEVEL}/../tmp/fmriprep/output_16FEB2020_fsr/ \
+  --resource-monitor \
+  --write-graph \
+  --fd-spike-threshold 0.5 \
+
+echo ""
+sleep 5m
+
+done
+```
+
+*you can add "-M jalil.rasgadoto@gmail.com -m ea" after fsl_sub to receive a message of complete or error
+
+and then run it by
+
+```
+bash fmriprep_script.sh
+```
+
+and that's all folks
 
 ## Output 🔩 📦
 
@@ -82,4 +160,5 @@ You can find more information and others tutorials at [PSILANTRO](https://github
 
 ## Other Links  ✒️
 
+- Another way to run it: https://github.com/GarzaLab/Documentation/wiki/FMRIPREP-preprocessing
 
