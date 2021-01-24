@@ -66,7 +66,7 @@ data/bids/
 In an HCP cluster like ADA, you firstly must load the modules that are needed to start running each tool like singularity.
 
 ```
-module load singularityce/3.5
+module load singularityce/3.5.3
 ```
 
 Also you going to need a FreeSurfer license and export it into your script or before run it, but don't worry, it's free: https://surfer.nmr.mgh.harvard.edu/registration.html
@@ -79,12 +79,41 @@ export FS_LICENSE=$DIR/jrasgado/license.txt
 
 ### Single subject run
 
+*The following script will take the location in which you are and ask for some inputs
+
+```
+#!/bin/bash
+
+echo "Please enter the subject ID (example: sub-042)"
+read sub
+echo "running subject $sub"
+
+DIR=$(PWD)
+export FS_LICENSE=$DIR/jrasgado/license.txt
+container=$DIR/public/singularity_images/fmriprep_v20.sif
+outdir=$DIR/output_fmriprep
+indir=$DIR/data
+
+singularity run -B /mnt:/mnt \
+    $container \
+    $inpdir/bids \
+    $outdir \
+    participant \
+    --participant-label ${sub} \
+    --skip_bids_validation \
+    --resource-monitor \
+    --write-graph \
+    --work-dir $DIR/tmp/output_fmriprep \
+    --output-spaces T1w MNI152NLin2009cAsym fsaverage5 \
+    --fd-spike-threshold 0.5 \
+    --use-syn-sdc
+```
+
 Directly from computer node you can bash the script with:
 
 ```
 bash fmriprep_script_1s.sh
 ```
-*it's gonna ask for some inputs
 
 -------
 
@@ -104,6 +133,8 @@ To avoid run each subject one by one, you can create an script to run 'em all wi
 
 ```
 #!/bin/bash
+
+read sub
 
 DIR=/path/to/all/files
 export FS_LICENSE=$DIR/jrasgado/license.txt
@@ -125,15 +156,16 @@ do
   echo "submitting job for subject $this_subject"
   fsl_sub -s openmp,8 -R 10 -N cpr_${this_subject}_fsr \
   singularity run -B /mnt:/mnt $container \
-  ${UP_LEVEL}/data/bids \
-  ${UP_LEVEL}/derrivatives/fmriprep/output_16FEB2020_fsr \
+  ${DIR}/data/bids \
+  ${DIR}/derrivatives/fmriprep/output_22JAN2021_fsr \
   participant \
   --participant_label $this_subject \
   --output-spaces T1w MNI152NLin2009cAsym fsaverage5\
-  --work-dir ${UP_LEVEL}/../tmp/fmriprep/output_16FEB2020_fsr/ \
+  --work-dir ${DIR}/tmp/fmriprep/output_22JAN2021_fsr/ \
   --resource-monitor \
   --write-graph \
   --fd-spike-threshold 0.5 \
+  --use-syn-sdc
 
 echo ""
 sleep 5m
