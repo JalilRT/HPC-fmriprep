@@ -185,6 +185,41 @@ and that's all folks
 
 ## Output 🔩 📦
 
+1) Visual QA (quality assessment) reports: (check one example in: https://fmriprep.org/en/stable/_static/sample_report.html)
+*fMRIPrep outputs summary reports, written to <output dir>/fmriprep/sub-<subject_label>.html*. These reports provide a quick way to make visual inspection of the results easy.   
+
+2) Derivatives (preprocessed data):
+*Preprocessed, or derivative, data are written to <output dir>/fmriprep/sub-<subject_label>/.*
+
+```
+sub-<subject_label>/
+  anat/
+    sub-<subject_label>[_space-<space_label>]_desc-preproc_T1w.nii.gz
+    sub-<subject_label>[_space-<space_label>]_desc-brain_mask.nii.gz
+```
+
+*Spatially-standardized derivatives are denoted with a space label*
+
+```
+sub-<subject_label>/
+  anat/
+    sub-<subject_label>_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz
+    sub-<subject_label>_space-fsaverage5_desc-preproc_T1w.nii.gz
+```
+
+*If FreeSurfer reconstructions are used, the following surface files are generated:*
+
+```
+sub-<subject_label>/
+  anat/
+    sub-<subject_label>_hemi-[LR]_smoothwm.surf.gii
+    sub-<subject_label>_hemi-[LR]_pial.surf.gii
+ ```   
+
+3) Confounds:
+Confounds (or nuisance regressors) are variables representing fluctuations with a potential non-neuronal origin. Such non-neuronal fluctuations may drive spurious results in fMRI data analysis, including standard activation GLM and functional connectivity analyses.
+
+![confo](https://fmriprep.org/en/stable/_images/sub-01_task-mixedgamblestask_run-01_bold_carpetplot.svg)
 
 ## Wiki 📖
 
